@@ -4,7 +4,7 @@
 
 三个入口：本我分身负责认识本人、情绪疏导与 Live 深聊接力；操盘手分身负责方向与经营判断；内容编导分身负责证据研究、选题、生产与复盘。其余模块由三个入口按任务调度。
 
-更新说明见 [更新报告](CHANGELOG.md)，版本发布见 [GitHub Releases](https://github.com/CAPTAINJJJF/jiangdao-skills/releases)。
+版本记录见 [版本记录](CHANGELOG.md)，版本发布见 [GitHub Releases](https://github.com/CAPTAINJJJF/jiangdao-skills/releases)。
 
 ## 内容与范围
 

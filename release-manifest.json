@@ -31,9 +31,9 @@
   ],
   "files": {
     ".gitignore": "4fd694d4c79755e554fdf4dc34a8e3fea5fe979bc880c5ad2e5a11f44580e2ef",
-    "CHANGELOG.md": "d2080bd45499486ad340bd69e45772d5526237b3a4be3533de326d4f066b5a11",
+    "CHANGELOG.md": "932692465b963e4f3efa8a77cc16de4ecaa7fddb434a635eea7f6c6f19e5502b",
     "LICENSE": "a2fabcb1c58324cd42695a6b3700784965aab613d8d7a04fe22d932df6e82bab",
-    "README.md": "b26adfaefc26e6ec347a5e0813103d89ecc8cbf5d8190b0543c7c18ed74257db",
+    "README.md": "6175133a30755a85ef784691cdc3c7ede659c4676d59c70549bfd6713c3affa7",
     "install_bundle.py": "833918231b3661caa915ea42f6f3cfb44da8f87f42416752c532ec4151525115",
     "jiangdao-action/SKILL.md": "73b1ca198514554a8c7114c1888e204398bfe6c161d5e2f310982443d0d27362",
     "jiangdao-action/agents/openai.yaml": "6cca907b551c26ccda11cd4f06f84260df21d14d63d5f24af280a54de55d6979",
