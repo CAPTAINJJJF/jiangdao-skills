@@ -1,67 +1,51 @@
-# 江导 IP 三分身 Skills
+# 江导三分身 Skills
 
-版本：V1.0（2026-09-04）。使用权限以随包 LICENSE 为准。仓库公开可见不额外授予修改、商业使用或再分发权限。
+版本：V1.0.1。提供 **Codex 版** 与 **豆包版**。
 
-三个入口：本我分身负责认识本人、情绪疏导与 Live 深聊接力；操盘手分身负责方向与经营判断；内容编导分身负责证据研究、选题、生产与复盘。其余模块由三个入口按任务调度。
+## 自动识别使用环境
 
-版本记录见 [版本记录](CHANGELOG.md)，版本发布见 [GitHub Releases](https://github.com/CAPTAINJJJF/jiangdao-skills/releases)。
+- **Codex**：读取根目录 `release-manifest.json`，使用根目录的 Skills 与 `shared/`。
+- **豆包**：优先读取 [豆包版清单](doubao/release-manifest.json) 和 [豆包版说明](doubao/README.md)，仅安装 `doubao/` 内的 Skills 与 `shared/`。不要安装根目录的 Codex 版；豆包版缺失或校验失败时停止并说明原因。
+- 其他环境：先确认兼容性与技能目录，再决定安装方式。
 
-## 内容与范围
+## 复制给你使用的 AI
 
-包含 15 个 Skill、共享合同及脚本。产品经理内测扩展和本人专用 Live 混剪助手不在此包内；普通本我 Live 交接已包含在本我分身和对话搭子中。
+把下面这段话发给 Codex 或支持本地工具的豆包：
 
-此包不包含个人数据库、真实 Live 验收样本、飞书工作区配置、登录信息、媒体素材或 Git 历史。第三方改编工具保留原 LICENSE 与 NOTICE。
+```text
+请读取仓库 https://github.com/CAPTAINJJJF/jiangdao-skills ，根据你当前运行的环境选择对应版本：Codex 使用根目录普通版；豆包优先读取 doubao/release-manifest.json，获取 doubao/ 豆包版。按照对应说明完整安装并核验，保留我的个人资料和配置；缺少工具时说明并协助配置。
+```
 
-## 安装
+安装完成后，新开任务，输入“启动本我分身”“启动操盘手分身”或“启动内容编导分身”。无法执行本地工具的环境应说明限制，不声称已经完成安装。
 
-在仓库页面选择 **Code → Download ZIP** 并解压，或克隆此仓库。
+## Codex 安装说明
 
-需要 Python 3.10+；内容校验与数据库编译还需要 Node.js。文字工作流可独立使用；媒体能力有额外条件，见下表。
-
-解压后，在本文件所在目录运行：
+供 Codex 执行：获取仓库后，在根目录使用 Python 3.10+ 运行：
 
 ```bash
-python3 verify_bundle.py
+python3 verify_dual_bundle.py
 python3 install_bundle.py --check
 python3 install_bundle.py
 ```
 
-默认安装到 `${CODEX_HOME:-$HOME/.codex}/skills`。可用 `--dest <目标目录>` 指定其他位置。已有同名 Skill 或 shared 目录时，安装器在写入前停止，不覆盖已有文件；先保留旧安装，选择新的独立安装目录检验，完成版本切换后再使用新版本。共享目录必须与各 Skill 目录同级，不能逐个用单 Skill 安装器拆装。
+默认安装到 `${CODEX_HOME:-$HOME/.codex}/skills`，可用 `--dest` 指定实际技能目录。已有同名目录时，安装器会停止；先保留旧安装和个人配置，核对变化后完成切换。15 个 Skills 与 `shared/` 必须完整安装，不能单独拆装。豆包请按 [豆包版说明](doubao/README.md) 操作。
 
-安装后打开新任务，让环境重新发现 Skills。安装器返回成功只表示文件已写入；请继续做以下检查。
+## 三个入口
 
-## 首次核验与使用
+- 本我分身：认识自己、情绪支持与 Live 深聊接力。
+- 操盘手分身：方向、定位、行动与经营判断。
+- 内容编导分身：研究、选题、内容生产与复盘。
 
-从实际安装目录定位 `jiangdao-content/scripts/check-skill-dependencies.py`，在自己的工作项目运行：
+## 工具与配置
 
-```bash
-python3 <已安装内容编导目录>/scripts/check-skill-dependencies.py --stage core
-```
+文字任务可从已有材料开始。数据库编译需要 Node.js；采集、转写、剪辑和发布按具体任务检查所需工具。工具缺失时，先说明缺口并协助安装配置，实际账号登录由使用者完成。运行 `shared/scripts/check-runtime.py --stage <阶段>` 可检查对应条件；不要把尖括号占位符直接作为参数。
 
-自定义安装目录可加 `--global-skills <目标目录>`。不要直接照抄尖括号占位符。配置路径见 [运行配置合同](shared/runtime-configuration.md)，空模板为 [runtime-config.example.json](shared/runtime-config.example.json)。无需填写身份配置才能首次认识；只有跨项目人格库和特定外部工具需要对应配置。不要把个人配置放回本分发包。
+本地 ASR 当前使用 Apple Silicon Mac 的 MLX 路线，其他系统需要适用的转写工具。视频工程仍需 ChatCut、剪映及对应扩展能力，按实际环境核验。
 
-试用入口：
+参见 [运行配置](shared/runtime-configuration.md) 与 [配置模板](shared/runtime-config.example.json)。个人资料与配置由使用者自行保管。
 
-- “启动本我分身，这是我第一次使用。”应识别初访，进入认识，具体深聊议题明确后准备 Live 交接。
-- “启动操盘手分身，我刚开始做账号，先帮我判断从哪一步开始。”应先诊断，不能凭空生成产品与市场结论。
-- “启动内容编导分身，分析我提供的完整文本。”可使用现有材料，不应因为没有视频下载器而阻止文本分析。
+## 版本记录与许可
 
-以上是首次使用检查场景，不代表已替使用者完成真实对话验收。
+[版本记录](CHANGELOG.md) · [发布页](https://github.com/CAPTAINJJJF/jiangdao-skills/releases/latest) · [LICENSE](LICENSE)
 
-## 可选能力
-
-| 能力 | 额外条件 | 当前交付边界 |
-|---|---|---|
-| 抖音采集 | 下载器固定版本、隔离运行环境、用户自行配置的账号权限 | 未安装时可继续已有文本任务；不携带任何登录信息 |
-| 本地 ASR | Apple Silicon Mac、uv、ffmpeg/ffprobe，首次下载模型 | 不承诺 Windows/Intel Mac 使用当前 MLX 引擎 |
-| 剪辑与工程交接 | course-cut-review、选定路线所需 ChatCut/剪映、capcut-cli 等 | 需独立安装并用代表性片段实际验收 |
-| 动效包装 | 已授权安装的固定风格目录、选择页、当前任务消息回传 | 缺少时停止包装；不绕过风格选择与确认 |
-| 发布 | 对应平台上传 Skill 和用户授权 | 小红书仅人工交接，其他已支持平台按授权执行 |
-
-使用 `shared/scripts/check-runtime.py --stage <阶段>` 检查当前能力。工具存在不表示登录有效、实际采集成功或工程播放通过。精确要求和可配置键以运行配置合同为准。可选扩展未满足时保留已有成果，明确缺口；不临时模仿缺失 Skill。
-
-## 隐私与授权
-
-姓名与路径配置由本人持有；人格库是否可跨项目使用仍需核对身份和材料归属。新任务、未找到数据库和新学员是不同状态。用户要求本轮不入库时遵守该边界。
-
-使用范围以 [LICENSE](LICENSE) 为准；如需许可，请通过仓库所有者的 GitHub 联系方式提出。第三方文件遵守其各自附带许可。
+使用范围以 LICENSE 为准；第三方文件遵守其附带许可。
