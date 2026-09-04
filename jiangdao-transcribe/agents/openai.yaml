@@ -1,0 +1,4 @@
+interface:
+  display_name: "江导视频转写"
+  short_description: "复用缓存，把音视频转成逐字稿、字级时间轴和原始字幕"
+  default_prompt: "使用 $jiangdao-transcribe 转写这份已授权素材；优先复用同源缓存，需要剪辑时同时生成字级时间轴，需要成片字幕时从当前视频重新生成原始 SRT。"

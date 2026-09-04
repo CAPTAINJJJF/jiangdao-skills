@@ -1,0 +1,4 @@
+interface:
+  display_name: "对话搭子"
+  short_description: "为主 Skill 和主任务编排独立共创对话大纲"
+  default_prompt: "由当前主 Skill 或主任务判断需要独立深聊后，调度 $jiangdao-dialogue-partner 将已明确的议题、目标、边界和返回对象编排成共同探索的大纲；返回原调用角色的下一步提示只在对话达到停止条件后的最后一条回复出现。"

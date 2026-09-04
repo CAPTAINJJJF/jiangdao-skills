@@ -1,0 +1,4 @@
+interface:
+  display_name: "江导视频发布"
+  short_description: "根据成片准备发布文案，按平台完成授权上传或人工交接并留痕"
+  default_prompt: "由 $jiangdao-ip 接收我的成片和逐字稿后，调度 $jiangdao-publish 根据经营发布计划生成平台发布清单和文案候选，等我选定并明确授权后按平台方式执行，小红书交给我本人发布。"

@@ -1,0 +1,23 @@
+# System and editor files
+.DS_Store
+._*
+.vscode/
+.idea/
+# Local runtime and credentials
+__pycache__/
+*.py[cod]
+.env
+.env.*
+*.pem
+*.key
+config/
+runtime.json
+# Personal material and generated outputs
+memory/
+memories/
+MEMORY.md
+outputs/
+*.mp4
+*.mov
+*.mp3
+*.wav

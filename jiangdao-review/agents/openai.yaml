@@ -1,0 +1,4 @@
+interface:
+  display_name: "内容编导分身｜发布复盘"
+  short_description: "复盘已发布内容的真实数据，形成下一轮单变量测试"
+  default_prompt: "由 $jiangdao-content 核验真实发布结果后，调度 $jiangdao-review 按主假设、指标和观察窗口复盘，自动写回赛道数据库增量并形成下一轮测试。"

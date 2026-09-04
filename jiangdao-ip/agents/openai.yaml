@@ -1,0 +1,4 @@
+interface:
+  display_name: "操盘手分身"
+  short_description: "判断经营节点并用7天分身接力计划持续推进"
+  default_prompt: "使用 $jiangdao-ip 完成经营诊断，按“最小成本启动，最快反馈启动”选择当前动作；有可用启动锚点时先执行取得反馈，再逐步收紧定位和计划。"

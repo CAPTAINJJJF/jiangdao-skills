@@ -1,0 +1,4 @@
+interface:
+  display_name: "江导内容生产"
+  short_description: "用合格爆款语料和用户原始内容生产可拍摄逐字稿"
+  default_prompt: "由 $jiangdao-content 核对爆款文本库后调度 $jiangdao-produce；灵魂创作先引导我产生原始内容，再提取结构并整理逐字稿。"

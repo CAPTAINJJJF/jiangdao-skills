@@ -1,0 +1,4 @@
+interface:
+  display_name: "江导战略行动"
+  short_description: "把唯一经营卡点变成7天分身接力计划与每日任务"
+  default_prompt: "使用 $jiangdao-action 根据操盘手已确认的启动锚点和当前节点，按“最小成本、最快反馈”生成7天分身接力计划，为每天指定主责分身、任务、交付物、现实动作和回来证据。"

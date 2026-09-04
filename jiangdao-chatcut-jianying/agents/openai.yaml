@@ -1,0 +1,4 @@
+interface:
+  display_name: "ChatCut 转剪映"
+  short_description: "双读回正式时间线，再直出多轨或按固定降级方案交给剪映"
+  default_prompt: "使用 $jiangdao-chatcut-jianying 交接已确认的 ChatCut 时间线：先确认上游完整剪辑工作流已经获批，再核对状态卡与桌面/MCP 时间线，锁定交付模式，最后读回剪映轨道并实际播放验收。"

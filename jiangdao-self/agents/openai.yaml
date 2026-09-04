@@ -1,0 +1,6 @@
+interface:
+  display_name: "本我分身"
+  short_description: "提供情绪疏导与心力支持，从真实经历中认识本人并沉淀表达资产"
+  default_prompt: "使用 $jiangdao-self 按我当前的需要提供情绪疏导与心力支持，或完成首次认识、持续认识、每日复盘和真实素材提取；先识别新老学员，议题明确后主动准备 Live 交接。"
+policy:
+  allow_implicit_invocation: true
