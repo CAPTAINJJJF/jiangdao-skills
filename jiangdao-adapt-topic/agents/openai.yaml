@@ -1,4 +1,4 @@
 interface:
   display_name: "江导IP选题共创"
-  short_description: "从赛道问题池加工可追溯选题候选"
-  default_prompt: "由 $jiangdao-content 判断进入选题阶段后，使用 $jiangdao-adapt-topic 先完成两条一轮的口味校准，再从赛道问题池生成有真实损益、目标客户愿意看且能撑起完整内容的候选。"
+  short_description: "直接从有来源的赛道问题共创选题，先校准偏好再交付可追溯候选"
+  default_prompt: "使用 $jiangdao-adapt-topic 根据我已有的题源和本轮目标共创选题，先核对来源并做两条一轮的口味校准。"

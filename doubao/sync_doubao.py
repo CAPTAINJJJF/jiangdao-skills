@@ -401,7 +401,7 @@ def cmd_sync(args) -> int:
         save_state({'version':version,'kind':kind,'source':str(getattr(args,'bundle',None) or f'{args.repo}@{args.tag or args.branch}'),
                     'synced_at':datetime.now().isoformat(timespec='seconds'),'files':manifest['files'],
                     'user_data_snapshot':snap,'last_backup':str(backup) if backup else None,'installed_names':names,'previous_state':state if state else None})
-        log('安装与回归通过。请在豆包新任务中核验实际发现和调用。')
+        log('安装与回归通过。请到豆包“技能 · 连接器”→“我的技能”点击“刷新”，再新开工作任务核验实际发现和调用。')
         return 0
     except (RuntimeError,OSError,ValueError) as e:
         err(str(e))

@@ -1,4 +1,4 @@
 interface:
   display_name: "江导方向探索"
   short_description: "用擅长、兴趣与市场需要三个圈，确定主要群体和内容主题"
-  default_prompt: "使用 $jiangdao-direction 检查是否已有足以开始的职业、行业或业务锚点；有锚点时先返回操盘手启动账号，没有时再通过多轮对聊形成可尝试的人群与内容主题。"
+  default_prompt: "使用 $jiangdao-direction 结合我的经历、兴趣和现实入口，帮我找到或比较可尝试的IP方向。"

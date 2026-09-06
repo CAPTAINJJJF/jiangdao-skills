@@ -17,7 +17,7 @@ def verify_dual(root: Path) -> dict:
     doubao = verify(root/'doubao')
     if codex.get('version') != doubao.get('version'):
         raise ValueError('VARIANT_VERSION_MISMATCH')
-    for field in ['skills','front_entries','excluded_modules']:
+    for field in ['skills','front_entries','coordinator_entries','excluded_modules']:
         if codex.get(field) != doubao.get(field):raise ValueError('VARIANT_METADATA_MISMATCH '+field)
     if set(codex['excluded_modules']) != {'jiangdao-product','jiangdao-live-clip-selector'}:
         raise ValueError('EXCLUDED_MODULE_SCOPE_CHANGED')

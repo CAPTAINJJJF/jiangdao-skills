@@ -1,4 +1,4 @@
 interface:
   display_name: "江导爆款拆解"
-  short_description: "判断内容为什么被接住以及最值得借哪一层"
-  default_prompt: "由 $jiangdao-content 调度 $jiangdao-deconstruct，按十步推理链还原原作、赛道问题、选题加工、作者答案、传播判断、评论洞察和可沉淀资产。"
+  short_description: "直接拆解完整内容，分析选题加工、作者答案和有证据的传播假设"
+  default_prompt: "使用 $jiangdao-deconstruct 拆解我提供的内容，先还原原作，再分析问题、选题加工、作者答案与传播依据，标明缺失证据。"

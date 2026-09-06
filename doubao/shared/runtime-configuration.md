@@ -21,7 +21,7 @@ Skill 包只保存通用规则。身份与人格库位置、工具目录和服�
 | transcribe | Apple Silicon Mac、uv、ffmpeg/ffprobe、Node；首次运行下载 MLX Whisper 模型 | 可接收已有可信逐字稿，不静默使用收费云服务 |
 | edit | 外部 `course-cut-review`；选定路线所需工具、ChatCut/剪映和真实小样 | 保留原片与既有成果，说明当前缺少的执行能力 |
 | full-package | edit 条件＋`motion_style_library`，目录须含固定风格目录、选择页和当前任务通知服务 | 停在包装依赖缺失，不跳过风格选择和确认 |
-| publish | `--platform` 指定平台；抖音、快手、Bilibili 对应上传 Skill | 继续文案准备，真实上传等待所需能力；小红书始终人工交接 |
+| publish | `--platform` 指定平台；抖音、小红书、快手、Bilibili 对应上传 Skill | 继续文案准备，真实上传等待所需能力；能力不可用时可人工交接 |
 
 下载器、外部 Skills 和桌面应用不包含在基础包，也不自动承诺其当前可用、免费或跨平台。安装来源与版本由维护者的依赖清单或使用者明确提供；未知来源不自动下载。账号信息由对应工具管理，运行配置不保存令牌、密码或 Cookie。
 

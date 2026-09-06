@@ -1,4 +1,4 @@
 interface:
   display_name: "江导视频剪辑"
-  short_description: "先展开并确认完整工作流，再开始剪辑、交接与实播验收"
-  default_prompt: "使用 $jiangdao-edit 处理这条视频：先根据口播、课程、演示、访谈或混合型素材展开完整剪辑工作流，等我确认后再写入 EDITING_STATE.json、锁定路线并开始转写、剪辑、交接和播放验收。"
+  short_description: "默认用 ChatCut；先确认完整工作流，再剪辑、交接与实播验收"
+  default_prompt: "使用 $jiangdao-edit 处理这份视频。默认优先使用 ChatCut，先确认或复用完整剪辑工作流，再按已授权范围剪辑、导出并验证播放；ChatCut 不可用或我指定其他工具时，再选择对应方案。"

@@ -1,19 +1,25 @@
 ---
 name: jiangdao-transcribe
-description: 江导自有的音视频转写 Skill。把用户有权访问的视频链接、本地视频或音频转成可追溯逐字稿、字级时间轴和原始字幕，复用同源缓存并完成专名校正与多人语义角色标注。由 jiangdao-content 或 jiangdao-edit 调度；用户直接提出转写、课程字幕、剪辑前 ASR 时也可使用。不负责内容拆解、选题、剪辑决定或发布稿。
+description: 江导视频转写，归属内容编导分身。用户说“启动视频转写”“把这个视频转成文字”“音频转逐字稿”“提取原始字幕”“生成字级时间轴”时可直接使用，也可由内容编导或剪辑能力调度。处理有权访问的链接、本地音视频，复用同源缓存并校正专名、标注多人语义角色。只交付逐字稿、时间轴或原始字幕，不自动拆解、选题或剪辑。
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
 ---
 
 # 江导视频转写
 
-版本：V1.0.1
+版本：V1.0.2
+
+## 启动与独立使用
+
+- 启动语：“启动视频转写”；“把这个视频转成文字”。也可明确调用 `$jiangdao-transcribe`。
+- 有权访问的音视频链接或本地文件，附已知专名（如有）。按需要输出逐字稿、时间轴或原始字幕，不要求先有账号方向或剪辑计划。
+- 独立启动和分身接力的范围遵守 [入口与使用目录](../shared/skill-entry-guide.md#独立启动与接力规则)。
 
 只完成“媒体到可信文本/时间轴”，供剪辑和内容拆解继续使用。
 
 ## 执行前读取
 
-完整读取 [transcription-contract.md](references/transcription-contract.md) 和共享的 [内容编导前台文本格式合同](../shared/content-frontstage-format-contract.md)。互联网链接需要取回平台内容时，先读取 [平台操作与发布方式合同](../shared/platform-operation-contract.md)。小红书仅接收第三方 API 或用户人工提供的字幕、媒体等材料；不调用 `agent-reach` 或账号直连补抓。其他允许的平台再同时使用 `agent-reach` 并按平台路线取回媒体；不能把“详情页可见”当成“媒体不可得”。《角色标注逐字稿》的用户可见格式只以共享前台格式合同为真源。
+完整读取 [transcription-contract.md](references/transcription-contract.md) 和共享的 [内容编导前台文本格式合同](../shared/content-frontstage-format-contract.md)（按合同“读取范围”加载公共规则与第六节）。互联网链接需要取回平台内容时，先读取 [平台操作与发布方式合同](../shared/platform-operation-contract.md)。小红书仅接收第三方 API 或用户人工提供的字幕、媒体等材料；不调用 `agent-reach` 或账号直连补抓。其他允许的平台再同时使用 `agent-reach` 并按平台路线取回媒体；不能把“详情页可见”当成“媒体不可得”。《角色标注逐字稿》的用户可见格式只以共享前台格式合同为真源。
 
 本机 MLX Whisper、字级时间轴和剪后原始 SRT 已收进本 Skill 的 `scripts/`，不依赖云端 ASR 或已淘汰的外部基础剪辑入口。
 

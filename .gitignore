@@ -1,17 +1,26 @@
 # System and editor files
 .DS_Store
+.AppleDouble
+.LSOverride
 ._*
+*.swp
+*.swo
+*~
 .vscode/
 .idea/
-# Local runtime and credentials
+
+# Python cache
 __pycache__/
 *.py[cod]
+
+# Local runtime and credentials
 .env
 .env.*
 *.pem
 *.key
 config/
 runtime.json
+
 # Personal material and generated outputs
 memory/
 memories/

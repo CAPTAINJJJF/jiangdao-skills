@@ -1,4 +1,4 @@
 interface:
-  display_name: "对话搭子"
-  short_description: "为主 Skill 和主任务编排独立共创对话大纲"
-  default_prompt: "由当前主 Skill 或主任务判断需要独立深聊后，调度 $jiangdao-dialogue-partner 将已明确的议题、目标、边界和返回对象编排成共同探索的大纲；返回原调用角色的下一步提示只在对话达到停止条件后的最后一条回复出现。"
+  display_name: "江导对话搭子"
+  short_description: "直接围绕当前议题准备深聊大纲，也可接收三个分身的对话交接"
+  default_prompt: "使用 $jiangdao-dialogue-partner 把当前议题和已有事实整理成可带去Chat或Live的深聊大纲，完成后把完整记录带回当前任务。"

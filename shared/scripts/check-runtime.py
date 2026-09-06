@@ -53,7 +53,6 @@ def main():
         notes.append('Current-task notification and user-confirmed motion_style_id remain mandatory; this check does not replace them.')
     if args.stage == 'publish':
         if not args.platform:missing.append('PLATFORM_REQUIRED')
-        elif args.platform == 'xiaohongshu':notes.append('manual_handoff; no account tools or login checks')
         else:skill(args.platform+'-upload')
         notes.append('Publication requires task-specific authorization and real result verification.')
     print(json.dumps({'stage':args.stage,'status':'ready_for_task_preflight' if not missing else 'missing_dependencies','missing':missing,'notes':notes},ensure_ascii=False,indent=2))
