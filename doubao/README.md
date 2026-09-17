@@ -1,10 +1,12 @@
 # 江导三分身 Skills · 豆包版
 
-版本：V1.0.2。豆包应使用本目录版本。
+版本：V1.0.3。豆包应使用本目录版本。
 
 ## 自动获取与安装
 
-读取本目录 `release-manifest.json`，确认 `variant` 为 `doubao`。同步器从仓库自动查找 `doubao/release-manifest.json`，仅获取并安装清单中的 Skills 与 `shared/`，不会默认退回 Codex 版。
+本说明只适用于能够执行本地命令并写入 Skills 目录的豆包。普通聊天窗口即使能回答仓库相关问题，也不能据此宣称已经安装；无法执行本地工具时直接说明限制，不要求用户粘贴完整清单。
+
+读取本目录 `release-manifest.json`，确认 `variant` 为 `doubao`。同步器仅获取并安装清单中的 Skills 与 `shared/`，不会默认退回 Codex 版。默认先尝试 GitHub；访问失败时自动改用 jsDelivr CDN，按清单逐文件下载并校验。
 
 供具备本地工具的豆包执行：先确认实际豆包 Skills 目录，再运行本目录的同步器。需要 Python 3.10+。
 
@@ -13,7 +15,13 @@ python3 sync_doubao.py check
 python3 sync_doubao.py sync --dest <实际豆包Skills目录>
 ```
 
-`--dest` 必须使用实际路径，不要照抄占位符。可用 `--tag v1.0.2` 固定本次版本。已有安装会备份，个人资料与运行配置不属于同步内容。需要恢复上次安装时可用 `rollback --dest <实际豆包Skills目录>`。
+如果豆包无法读取 GitHub 页面或 Raw 链接，但能执行本地工具，使用下面的同步器地址，不要让用户手工粘贴 `release-manifest.json`：
+
+`https://cdn.jsdelivr.net/gh/CAPTAINJJJF/jiangdao-skills@main/doubao/sync_doubao.py`
+
+同步器会自动回退；也可用 `--source jsdelivr` 强制使用 CDN。CDN 同样不可用时，停止远程安装并改用已下载的完整发布包配合 `--bundle`，不要绕过清单校验。
+
+`--dest` 必须使用实际路径，不要照抄占位符。可用 `--tag v1.0.3` 固定本次版本。已有安装会备份，个人资料与运行配置不属于同步内容。需要恢复上次安装时可用 `rollback --dest <实际豆包Skills目录>`。
 
 也可对已获取的完整仓库目录使用 `--bundle <仓库目录>`，离线校验后安装。版型缺失或校验失败时应停止，不能宣称安装成功。
 

@@ -4,7 +4,9 @@
 sync_jiangdao_doubao.py —— 江导 Skills 豆包版同步脚本
 
 用途
-  从 GitHub 仓库抓取「江导 Skills」发布包，自动识别豆包版并安装到豆包技能根目录。
+  从公开发布源抓取「江导 Skills」豆包版并安装到豆包技能根目录。
+  默认先尝试 GitHub 发布包；GitHub 不可访问时，自动改用 jsDelivr CDN，
+  按豆包版清单逐文件下载并校验。
   每次仓库更新后运行本脚本，即可完成：拉取 → 校验 → 版本比对 → 数据快照 →
   备份旧版 → 替换 → 回归检查 的完整预处理流程。
 
@@ -24,6 +26,7 @@ sync_jiangdao_doubao.py —— 江导 Skills 豆包版同步脚本
   --dest <目录>          安装目标（默认自动探测豆包 .user_skills 根）
   --repo <owner/repo>    仓库（默认 CAPTAINJJJF/jiangdao-skills）
   --branch <分支>        分支（默认 main）；也可用 --tag <版本> 指定 tag
+  --source <来源>        auto（默认）/ github / jsdelivr
   --fallback-adapt       豆包版未发布时，用普通版适配安装
   --bundle <目录或ZIP>    使用本地候选，不访问远端
   --dry-run              只演练，不修改安装、备份和同步状态（可创建临时目录）
@@ -37,6 +40,7 @@ sync_jiangdao_doubao.py —— 江导 Skills 豆包版同步脚本
 from __future__ import annotations
 
 import argparse
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import hashlib
 import json
 import os
@@ -45,6 +49,8 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import time
+import urllib.parse
 import urllib.request
 import zipfile
 from datetime import datetime
@@ -56,6 +62,10 @@ CONFIG_DIR = Path(os.environ.get("JIANGDAO_SYNC_CONFIG_DIR", str(Path.home() / "
 BACKUP_DIR = CONFIG_DIR / "backups"
 STATE_FILE = CONFIG_DIR / "doubao-sync-state.json"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) sync-jiangdao-doubao/1.0"
+MAX_MANIFEST_BYTES = 2 * 1024 * 1024
+MAX_FILE_BYTES = 50 * 1024 * 1024
+MAX_TOTAL_BYTES = 300 * 1024 * 1024
+MAX_MANIFEST_FILES = 500
 
 # 豆包技能根目录的候选探测路径（Mac 豆包客户端默认位置）
 DEST_CANDIDATES = [
@@ -127,6 +137,114 @@ def download_zip(repo: str, branch: str | None, tag: str | None, tmp: Path) -> P
     except Exception as e:
         raise RuntimeError(f"下载失败: {e}（请检查网络或仓库地址）")
     return dest
+
+
+def read_url(url: str, max_bytes: int, attempts: int = 3) -> bytes:
+    last_error: Exception | None = None
+    for attempt in range(1, attempts + 1):
+        req = urllib.request.Request(url, headers={"User-Agent": UA})
+        try:
+            with urllib.request.urlopen(req, timeout=60) as response:
+                declared = response.headers.get("Content-Length")
+                if declared and int(declared) > max_bytes:
+                    raise RuntimeError(f"远程文件过大: {url}")
+                data = response.read(max_bytes + 1)
+            if len(data) > max_bytes:
+                raise RuntimeError(f"远程文件过大: {url}")
+            return data
+        except RuntimeError:
+            raise
+        except Exception as e:
+            last_error = e
+            if attempt < attempts:
+                time.sleep(0.5 * attempt)
+    raise RuntimeError(f"下载失败（已重试 {attempts} 次）: {url}: {last_error}") from last_error
+
+
+def validate_remote_manifest(manifest: dict) -> dict[str, str]:
+    if manifest.get("variant") != "doubao":
+        raise RuntimeError("CDN 清单不是豆包版，停止下载。")
+    files = manifest.get("files")
+    skills = manifest.get("skills")
+    if not isinstance(files, dict) or not files or len(files) > MAX_MANIFEST_FILES:
+        raise RuntimeError("CDN 清单 files 缺失或数量异常。")
+    if not isinstance(skills, list) or not skills:
+        raise RuntimeError("CDN 清单 skills 缺失。")
+    clean: dict[str, str] = {}
+    for name, digest in files.items():
+        if not isinstance(name, str) or not isinstance(digest, str):
+            raise RuntimeError("CDN 清单包含无效文件记录。")
+        path = PurePosixPath(name)
+        if (not name or path.is_absolute() or ".." in path.parts or "\\" in name
+                or ":" in path.parts[0] or not re.fullmatch(r"[a-f0-9]{64}", digest)):
+            raise RuntimeError("CDN 清单包含不安全路径或无效摘要: " + name)
+        clean[name] = digest
+    return clean
+
+
+def download_jsdelivr_bundle(repo: str, branch: str | None, tag: str | None, tmp: Path) -> Path:
+    if not re.fullmatch(r"[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repo):
+        raise RuntimeError("仓库名称格式无效。")
+    ref = tag or branch or BRANCH_DEFAULT
+    if not re.fullmatch(r"[A-Za-z0-9._/-]+", ref):
+        raise RuntimeError("分支或标签格式无效。")
+    encoded_ref = urllib.parse.quote(ref, safe="")
+    base_url = f"https://cdn.jsdelivr.net/gh/{repo}@{encoded_ref}/doubao"
+    log(f"GitHub 不可用时从 CDN 获取豆包版: {base_url}")
+    manifest_url = base_url + "/release-manifest.json"
+    try:
+        manifest_data = read_url(manifest_url, MAX_MANIFEST_BYTES)
+        manifest = json.loads(manifest_data.decode("utf-8"))
+    except (UnicodeDecodeError, json.JSONDecodeError) as e:
+        raise RuntimeError(f"CDN 清单解析失败: {e}") from e
+    files = validate_remote_manifest(manifest)
+    root = tmp / "cdn-bundle"
+    base = root / "doubao"
+    base.mkdir(parents=True)
+    (base / "release-manifest.json").write_bytes(manifest_data)
+    def fetch_file(item: tuple[str, str]) -> tuple[str, str, bytes]:
+        name, digest = item
+        url_path = "/".join(urllib.parse.quote(part, safe="") for part in PurePosixPath(name).parts)
+        data = read_url(base_url + "/" + url_path, MAX_FILE_BYTES)
+        if hashlib.sha256(data).hexdigest() != digest:
+            raise RuntimeError("CDN 文件摘要不一致: " + name)
+        return name, digest, data
+
+    total = len(manifest_data)
+    completed = 0
+    with ThreadPoolExecutor(max_workers=min(6, len(files))) as executor:
+        futures = [executor.submit(fetch_file, item) for item in files.items()]
+        try:
+            for future in as_completed(futures):
+                name, _, data = future.result()
+                total += len(data)
+                if total > MAX_TOTAL_BYTES:
+                    raise RuntimeError("CDN 下载总量超过限制，停止安装。")
+                target = base.joinpath(*PurePosixPath(name).parts)
+                target.parent.mkdir(parents=True, exist_ok=True)
+                target.write_bytes(data)
+                completed += 1
+                if completed % 25 == 0 or completed == len(files):
+                    log(f"CDN 下载进度: {completed}/{len(files)}")
+        except BaseException:
+            for future in futures:
+                future.cancel()
+            raise
+    return root
+
+
+def download_remote_bundle(args, tmp: Path) -> tuple[Path, str]:
+    source = getattr(args, "source", "auto") or "auto"
+    if source not in {"auto", "github", "jsdelivr"}:
+        raise RuntimeError("未知下载来源: " + source)
+    if source in {"auto", "github"}:
+        try:
+            return extract_zip(download_zip(args.repo, args.branch, args.tag, tmp), tmp), "github"
+        except RuntimeError as e:
+            if source == "github":
+                raise
+            log(f"GitHub 下载失败，自动改用 CDN: {e}")
+    return download_jsdelivr_bundle(args.repo, args.branch, args.tag, tmp), "jsdelivr"
 
 
 def extract_zip(zip_path: Path, tmp: Path) -> Path:
@@ -325,8 +443,9 @@ def prepare_bundle(args) -> tuple:
         if bundle:
             bundle = Path(bundle).expanduser().resolve()
             root = bundle if bundle.is_dir() else extract_zip(bundle, tmp)
+            source = "bundle:" + str(bundle)
         else:
-            root = extract_zip(download_zip(args.repo,args.branch,args.tag,tmp),tmp)
+            root, source = download_remote_bundle(args, tmp)
         mpath, mbase, kind = find_doubao_manifest(root)
         if mpath is None:
             if not args.fallback_adapt:
@@ -344,7 +463,7 @@ def prepare_bundle(args) -> tuple:
             if kind == 'adapted':
                 (workdir/name/'agents/openai.yaml').unlink(missing_ok=True)
         log(f"校验通过: version={manifest['version']} kind={kind} skills={len(manifest['skills'])}")
-        return workdir, manifest, mpath, str(manifest['version']), kind, None
+        return workdir, manifest, mpath, str(manifest['version']), kind, source
     except BaseException:
         if workdir:shutil.rmtree(workdir,ignore_errors=True)
         raise
@@ -354,7 +473,7 @@ def prepare_bundle(args) -> tuple:
 def cmd_check(args) -> int:
     workdir = None
     try:
-        workdir, manifest, _, version, kind, _ = prepare_bundle(args)
+        workdir, manifest, _, version, kind, source = prepare_bundle(args)
         state = load_state(); diff = diff_against_state(manifest,state)
         if state.get('version') == version and state.get('kind') == kind and not any(diff.values()):
             log('本地已是最新，无需同步。')
@@ -372,7 +491,7 @@ def cmd_sync(args) -> int:
     state = load_state(); workdir = backup = None
     names = []; writing = False
     try:
-        workdir, manifest, _, version, kind, _ = prepare_bundle(args)
+        workdir, manifest, _, version, kind, source = prepare_bundle(args)
         names = installed_names(dest,manifest['skills'])
         if dest.is_symlink() or any((dest/n).is_symlink() for n in names):
             raise RuntimeError('安装目标存在符号链接，保留旧目录并停止。')
@@ -398,7 +517,7 @@ def cmd_sync(args) -> int:
                     raise RuntimeError('安装后文件不一致: '+name)
         if runtime.is_file() and snap.get('runtime_json_sha256') != sha256_file(runtime):
             raise RuntimeError('用户配置发生变化，停止记录成功状态。')
-        save_state({'version':version,'kind':kind,'source':str(getattr(args,'bundle',None) or f'{args.repo}@{args.tag or args.branch}'),
+        save_state({'version':version,'kind':kind,'source':source,
                     'synced_at':datetime.now().isoformat(timespec='seconds'),'files':manifest['files'],
                     'user_data_snapshot':snap,'last_backup':str(backup) if backup else None,'installed_names':names,'previous_state':state if state else None})
         log('安装与回归通过。请到豆包“技能 · 连接器”→“我的技能”点击“刷新”，再新开工作任务核验实际发现和调用。')
@@ -461,6 +580,8 @@ def main() -> int:
         sp.add_argument("--repo", default=REPO_DEFAULT, help=f"仓库 owner/repo（默认 {REPO_DEFAULT}）")
         sp.add_argument("--branch", default=None, help="分支（默认 main）")
         sp.add_argument("--tag", default=None, help="指定 tag（如 v1.0），与 --branch 二选一")
+        sp.add_argument("--source", choices=("auto", "github", "jsdelivr"), default="auto",
+                        help="远程来源：auto 自动回退、github 仅 GitHub、jsdelivr 仅 CDN")
         sp.add_argument("--bundle", type=Path, help="本地双版本候选目录或 ZIP；不访问远端")
         sp.add_argument("--fallback-adapt", action="store_true", help="豆包版未发布时用普通版适配")
         sp.add_argument("--dry-run", action="store_true", help="只演练，不修改安装与同步状态")

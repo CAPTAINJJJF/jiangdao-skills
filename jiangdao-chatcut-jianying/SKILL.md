@@ -2,12 +2,12 @@
 name: jiangdao-chatcut-jianying
 description: 江导ChatCut转剪映，归属内容编导的视频剪辑能力。用户说“启动ChatCut转剪映”“ChatCut转剪映”“把这条ChatCut时间线导出剪映工程”时可直接使用，也可由 jiangdao-edit 调度。把已确认的ChatCut初剪或包装时间线转为可编辑剪映草稿，校验素材、轨道、字幕与播放。工作流未确认时在当前任务调用剪辑能力补齐；不借转换重新剪辑或覆盖旧草稿。
 metadata:
-  version: "1.0.2"
+  version: "1.0.3"
 ---
 
 # ChatCut 转剪映
 
-版本：V1.0.2
+版本：V1.0.3
 
 ## 启动与独立使用
 
@@ -18,6 +18,8 @@ metadata:
 把已经获批的 ChatCut 初剪或正式包装变成独立、可编辑、可追溯的剪映草稿。每次只认一份状态卡、一条正式时间线和一个交付模式。
 
 ## 执行前读取
+
+**字幕交付必验：默认无句读标点；剪映必须使用能“应用到全部”的原生字幕。普通文字轨不算通过。** 每次字幕生成、返修或导出前，读取并执行 [字幕交付硬规则](../shared/subtitle-delivery-contract.md)。
 
 每次完整读取 [workflow-contract.md](references/workflow-contract.md)。
 

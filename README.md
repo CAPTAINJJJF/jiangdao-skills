@@ -1,6 +1,6 @@
 # 江导三分身 Skills
 
-版本：V1.0.2。提供 **Codex 版** 与 **豆包版**。
+版本：V1.0.3。提供 **Codex 版** 与 **豆包版**。
 
 ## 自动识别使用环境
 
@@ -10,10 +10,10 @@
 
 ## 复制给你使用的 AI
 
-把下面这段话发给 Codex 或支持本地工具的豆包：
+把下面这段话发给 Codex 或支持本地工具的豆包。普通豆包聊天无法安装本地 Skill，应直接说明限制：
 
 ```text
-请读取仓库 https://github.com/CAPTAINJJJF/jiangdao-skills ，根据你当前运行的环境选择对应版本：Codex 使用根目录普通版；豆包优先读取 doubao/release-manifest.json，获取 doubao/ 豆包版。按照对应说明完整安装并核验，保留我的个人资料和配置；缺少工具时说明并协助配置。
+请先确认你能执行本地命令并写入 Skills 目录。可以时读取仓库 https://github.com/CAPTAINJJJF/jiangdao-skills ，根据当前环境选择对应版本：Codex 使用根目录普通版；豆包使用 doubao/ 豆包版。豆包无法访问 GitHub 时，从 https://cdn.jsdelivr.net/gh/CAPTAINJJJF/jiangdao-skills@main/doubao/sync_doubao.py 获取同步器，由同步器自动改用 CDN。按照对应说明完整安装并核验，保留我的个人资料和配置；不能执行本地工具时直接说明无法安装，不要求我粘贴完整清单。
 ```
 
 安装完成后，新开任务，按[用途与启动语目录](shared/skill-entry-guide.md)选择入口。可以输入“启动本我分身”“启动操盘手分身”“启动内容编导分身”，也可以直接输入“启动方向探索”“启动爆款拆解”等专业启动语。无法执行本地工具的环境应说明限制，不声称已经完成安装。

@@ -2,12 +2,12 @@
 name: jiangdao-edit
 description: 江导视频剪辑，归属内容编导分身。用户说“启动视频剪辑”“帮我剪辑”“剪一下这个视频”“剪课程”“剪口播”“剪访谈”时可直接使用，也可由内容编导调度。默认使用ChatCut，先确认或复用完整剪辑工作流，再完成内容审核、剪辑、字幕、导出和实际播放验收；用户没有或无法使用ChatCut时再选择其他方案，用户明确指定其他工具时遵从其选择。只要转写用 jiangdao-transcribe；只转换已确认ChatCut时间线用 jiangdao-chatcut-jianying；不负责写稿或发布。
 metadata:
-  version: "1.0.2"
+  version: "1.0.3"
 ---
 
 # 江导视频剪辑
 
-版本：V1.0.2
+版本：V1.0.3
 
 ## 启动与独立使用
 
@@ -18,6 +18,8 @@ metadata:
 把真实原片变成可追溯的 A-roll、在线时间线或剪映工程。新任务先展开完整工作流供用户确认；恢复同一任务时读回状态卡与原确认，范围未变直接续接。确认后只保留一个活动路线和一份阶段状态卡。
 
 ## 执行前读取
+
+**字幕交付必验：默认无句读标点；剪映必须使用能“应用到全部”的原生字幕。普通文字轨不算通过。** 每次字幕生成、返修或导出前，读取并执行 [字幕交付硬规则](../shared/subtitle-delivery-contract.md)。
 
 每次完整读取 [editing-contract.md](references/editing-contract.md) 和共享的 [内容编导前台文本格式合同](../shared/content-frontstage-format-contract.md)（按合同“读取范围”加载公共规则与第十一节）。路线锁定为 `local_a_roll` 后，再完整读取 [local-a-roll-contract.md](references/local-a-roll-contract.md) 和 [jiangdao-transcribe](../jiangdao-transcribe/SKILL.md)。其余路线不加载本机删重、气口和审核页细则。用户可见的剪辑审核入口和成片交付字段遵守共享格式合同，不再创建第二套审核页格式。
 
